@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace WhereToEat.Services
 {
-    public class IRegistrationService
+    public interface IRegistrationService
     {
+        public void UserRegistration(string username, string email, string pw);
     }
 }

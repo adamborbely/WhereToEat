@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WhereToEat.Services
 {
-    interface IPasswordHelper
+    public interface IPasswordHelper
     {
         public string EncryptPassword(string password);
         public bool IsValidUser(string username, string password);
