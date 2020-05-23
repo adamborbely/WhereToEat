@@ -1,0 +1,41 @@
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS restaurants CASCADE;
+DROP TABLE IF EXISTS categories CASCADE; 
+DROP TABLE IF EXISTS restaurant_category CASCADE;
+DROP TABLE IF EXISTS comments CASCADE;
+
+CREATE TABLE users(
+	user_id SERIAL PRIMARY KEY,
+	username TEXT DEFAULT NULL,
+	email TEXT UNIQUE NOT NULL,
+	password TEXT NOT NULL,
+	isOwner BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE restaurants(
+	restaurant_id SERIAL PRIMARY KEY,
+	name TEXT DEFAULT NULL,
+	address TEXT DEFAULT NULL,
+	rating NUMERIC(3,2) DEFAULT 0,
+	owner_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL
+);
+
+CREATE TABLE comments(
+	comment_id SERIAL PRIMARY KEY,
+	user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
+	restaurant_id INTEGER NOT NULL REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
+	comment_time TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+	message TEXT
+);
+
+CREATE TABLE categories(
+	category_id SERIAL PRIMARY KEY,
+	name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE restaurant_category(
+	restaurant_id INTEGER NOT NULL REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
+	category_id INTEGER NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
+	PRIMARY KEY(restaurant_id, category_id)
+);
+
