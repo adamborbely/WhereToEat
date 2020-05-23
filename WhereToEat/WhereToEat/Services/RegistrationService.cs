@@ -18,7 +18,26 @@ namespace WhereToEat.Services
 
         public void UserRegistration(string username, string email, string pw)
         {
+            using var command = _connection.CreateCommand();
 
+            var usernameParam = command.CreateParameter();
+            usernameParam.ParameterName = "username";
+            usernameParam.Value = username;
+
+            var emailParam = command.CreateParameter();
+            emailParam.ParameterName = "email";
+            emailParam.Value = email;
+
+            var passwordParam = command.CreateParameter();
+            passwordParam.ParameterName = "password";
+            passwordParam.Value = pw;
+
+            command.CommandText = @"INSERT INTO users (username, password, email) VALUES (@username, @password, @email)";
+            command.Parameters.Add(usernameParam);
+            command.Parameters.Add(passwordParam);
+            command.Parameters.Add(emailParam);
+
+            command.ExecuteNonQuery();
         }
     }
 }
