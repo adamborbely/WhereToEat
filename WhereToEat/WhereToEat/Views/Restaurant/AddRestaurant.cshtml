@@ -1,0 +1,27 @@
+﻿@using System.Security.Claims
+@model WhereToEat.Models.RestaurantRegisterModel
+
+@{
+    ViewData["Title"] = "RestaurantRegister";
+}
+
+<h1>Restaurant Registration</h1>
+
+<form method="post">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="RestaurantName" class="control-label">Restaurant Name</label>
+            <input type="text" class="form-control" asp-for="RestaurantName" required>
+            <span class="text-danger" asp-validation-for="RestaurantName"></span>
+        </div>
+        <input type="hidden" asp-for="OwnerId" class="form-control" value="@(Context.User.FindFirstValue("Id"))">
+        <div class="form-group">
+            <label asp-for="Address"></label>
+            <input type="text" class="form-control" asp-for="Address" required>
+            <span class="text-danger" asp-validation-for="Address"></span>
+        </div>
+        <input type="submit" value="Register" class="btn btn-primary" />
+    </div>
+</form>
+
+

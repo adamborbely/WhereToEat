@@ -12,12 +12,12 @@ namespace WhereToEat.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IRegistrationService _registerHelper;
+        private readonly IUserService _userService;
         private readonly IPasswordHelper _pwencrypt;
 
-        public UserController(IRegistrationService regService, IPasswordHelper pwHelp)
+        public UserController(IUserService userService, IPasswordHelper pwHelp)
         {
-            _registerHelper = regService;
+            _userService = userService;
             _pwencrypt = pwHelp;
         }
 
@@ -33,7 +33,7 @@ namespace WhereToEat.Controllers
 
             try
             {
-                _registerHelper.UserRegistration(register.Username, register.Email, encryptedPW);
+                _userService.UserRegistration(register.Username, register.Email, encryptedPW);
             }
             catch (Npgsql.PostgresException)
             {
@@ -47,6 +47,35 @@ namespace WhereToEat.Controllers
         public IActionResult RestaurantOwnerRegister()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RestaurantOwnerRegister(UserRegisterModel register)
+        {
+            var encryptedPW = _pwencrypt.EncryptPassword(register.Password);
+
+            try
+            {
+                _userService.UserRegistration(register.Username, register.Email, encryptedPW, true);
+            }
+            catch (Npgsql.PostgresException)
+            {
+                ModelState.AddModelError("Email", "Email Already in Use.");
+                return View();
+            }
+
+            var userId = _userService.GetUserId(register.Email);
+
+            await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+                    {
+                        new Claim("Id", userId.ToString()),
+                        new Claim("Email",  register.Email),
+                    }, CookieAuthenticationDefaults.AuthenticationScheme)),
+                    new AuthenticationProperties());
+
+            return Redirect("../Restaurant/AddRestaurant");
         }
 
         public IActionResult Login()
@@ -63,19 +92,17 @@ namespace WhereToEat.Controllers
                 return View();
             }
 
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, login.Email) };
-
-            var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties
-            { };
-
+            var userId = _userService.GetUserId(login.Email);
 
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+                    {
+                        new Claim("Id", userId.ToString()),
+                        new Claim("Email", login.Email),
+                    }, CookieAuthenticationDefaults.AuthenticationScheme)),
+                    new AuthenticationProperties());
+
             return RedirectToAction("Index", "Home");
         }
 

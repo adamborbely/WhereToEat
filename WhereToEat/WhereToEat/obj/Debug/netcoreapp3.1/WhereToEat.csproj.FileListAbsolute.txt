@@ -111,3 +111,4 @@ C:\Learning\WEB\PA\WhereToEat\WhereToEat\obj\Debug\netcoreapp3.1\WhereToEat.MvcA
 C:\Learning\WEB\PA\WhereToEat\WhereToEat\obj\Debug\netcoreapp3.1\Razor\Views\User\UserRegister.cshtml.g.cs
 C:\Learning\WEB\PA\WhereToEat\WhereToEat\obj\Debug\netcoreapp3.1\Razor\Views\User\RestaurantOwnerRegister.cshtml.g.cs
 C:\Learning\WEB\PA\WhereToEat\WhereToEat\obj\Debug\netcoreapp3.1\Razor\Views\User\Login.cshtml.g.cs
+C:\Learning\WEB\PA\WhereToEat\WhereToEat\obj\Debug\netcoreapp3.1\Razor\Views\Restaurant\AddRestaurant.cshtml.g.cs

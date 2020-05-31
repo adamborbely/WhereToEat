@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
+using WhereToEat.Controllers;
 using WhereToEat.Services;
 
 namespace WhereToEat
@@ -32,7 +33,8 @@ namespace WhereToEat
         {
             services.AddControllersWithViews();
             services.AddScoped<IPasswordHelper, PasswordEncrypt>();
-            services.AddScoped<IRegistrationService, RegistrationService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IDbConnection>(_ =>
             {
                 var connection = new NpgsqlConnection(_connectionString);
