@@ -15,9 +15,12 @@ CREATE TABLE users(
 CREATE TABLE restaurants(
 	restaurant_id SERIAL PRIMARY KEY,
 	name TEXT DEFAULT NULL,
+	city TEXT DEFAULT NULL,
+	zip_code INTEGER DEFAULT NULL,
 	address TEXT DEFAULT NULL,
 	rating NUMERIC(3,2) DEFAULT 0,
-	owner_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL
+	owner_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
+	restaurant_imageURL TEXT DEFAULT NULL
 );
 
 CREATE TABLE comments(

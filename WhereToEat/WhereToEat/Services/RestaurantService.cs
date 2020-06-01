@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using WhereToEat.Controllers;
 
 namespace WhereToEat.Services
@@ -15,7 +12,7 @@ namespace WhereToEat.Services
         {
             _connection = connection;
         }
-        public void AddRestaurant(int ownerId, string name, string address)
+        public void AddRestaurant(int ownerId, string name, string city, int zipCode, string address, string image)
         {
             using var command = _connection.CreateCommand();
 
@@ -27,15 +24,31 @@ namespace WhereToEat.Services
             ownerIdParam.ParameterName = "owner_id";
             ownerIdParam.Value = ownerId;
 
+            var cityParam = command.CreateParameter();
+            cityParam.ParameterName = "city";
+            cityParam.Value = city;
+
+            var zipCodeParam = command.CreateParameter();
+            zipCodeParam.ParameterName = "zip_code";
+            zipCodeParam.Value = zipCode;
+
             var addressParam = command.CreateParameter();
             addressParam.ParameterName = "address";
             addressParam.Value = address;
 
-            command.CommandText = @"INSERT INTO restaurants (name, address, owner_id) VALUES (@name, @address, @owner_id)";
+            var imageParam = command.CreateParameter();
+            imageParam.ParameterName = "restaurant_imageURL";
+            imageParam.Value = (object)image ?? DBNull.Value;
+
+            command.CommandText = @"INSERT INTO restaurants (name, city, zip_code,address, owner_id, restaurant_imageURL) 
+                                    VALUES (@name, @city, @zip_code, @address, @owner_id, @restaurant_imageUrl)";
 
             command.Parameters.Add(restaurantNameParam);
             command.Parameters.Add(ownerIdParam);
             command.Parameters.Add(addressParam);
+            command.Parameters.Add(cityParam);
+            command.Parameters.Add(zipCodeParam);
+            command.Parameters.Add(imageParam);
             command.ExecuteNonQuery();
         }
     }
