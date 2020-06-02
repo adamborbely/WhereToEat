@@ -1,11 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using WhereToEat.Controllers;
+using WhereToEat.Models;
 
 namespace WhereToEat.Services
 {
     public class RestaurantService : IRestaurantService
     {
+        private static RestaurantModel ToRestaurant(IDataReader reader)
+        {
+            return new RestaurantModel
+            {
+                Id = (int)reader["restaurant_id"],
+                Name = (string)reader["name"],
+                Address = (string)reader["address"],
+                City = (string)reader["city"],
+                Rating = (decimal)reader["rating"],
+                OwnerID = (int)reader["owner_id"],
+                ZipCode = (int)reader["zip_code"],
+                ImageURL = reader["restaurant_imageURL"] as string,
+            };
+        }
+
         private readonly IDbConnection _connection;
 
         public RestaurantService(IDbConnection connection)
@@ -50,6 +67,57 @@ namespace WhereToEat.Services
             command.Parameters.Add(zipCodeParam);
             command.Parameters.Add(imageParam);
             command.ExecuteNonQuery();
+        }
+
+        public List<RestaurantModel> GetAll()
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = "SELECT * FROM restaurants";
+
+            using var reader = command.ExecuteReader();
+            List<RestaurantModel> restaurants = new List<RestaurantModel>();
+            while (reader.Read())
+            {
+                restaurants.Add(ToRestaurant(reader));
+            }
+            return restaurants;
+        }
+
+        public RestaurantModel GetRestaurantById(int id)
+        {
+            using var command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM restaurants WHERE restaurant_id = @restaurant_id";
+
+            var idParam = command.CreateParameter();
+            idParam.ParameterName = "restaurant_id";
+            idParam.Value = id;
+
+            command.Parameters.Add(idParam);
+            using var reader = command.ExecuteReader();
+            reader.Read();
+            return ToRestaurant(reader);
+        }
+
+        public List<RestaurantModel> GetAllRestaurantForOwner(int id)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"SELECT * FROM restaurants WHERE owner_id = @owner_id";
+
+            var idParam = command.CreateParameter();
+            idParam.ParameterName = "owner_id";
+            idParam.Value = id;
+
+            command.Parameters.Add(idParam);
+
+            using var reader = command.ExecuteReader();
+            List<RestaurantModel> restaurants = new List<RestaurantModel>();
+            while (reader.Read())
+            {
+                restaurants.Add(ToRestaurant(reader));
+            }
+            return restaurants;
         }
     }
 }

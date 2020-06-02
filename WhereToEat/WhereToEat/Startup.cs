@@ -45,6 +45,7 @@ namespace WhereToEat
             services.AddScoped<IPasswordHelper, PasswordEncrypt>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRestaurantService, RestaurantService>();
+            services.AddScoped<ICommentService, CommentService>();
             services.AddSingleton(typeof(IStorageService), new FileStorageService(_uploadsDirectory));
 
             services.AddScoped<IDbConnection>(_ =>

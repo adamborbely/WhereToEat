@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,11 +15,15 @@ namespace WhereToEat.Controllers
     {
         private readonly IUserService _userService;
         private readonly IPasswordHelper _pwencrypt;
+        private readonly ICommentService _commentService;
+        private readonly IRestaurantService _restaurantService;
 
-        public UserController(IUserService userService, IPasswordHelper pwHelp)
+        public UserController(IUserService userService, IPasswordHelper pwHelp, ICommentService commentService, IRestaurantService restaurantService)
         {
             _userService = userService;
             _pwencrypt = pwHelp;
+            _commentService = commentService;
+            _restaurantService = restaurantService;
         }
 
         public IActionResult UserRegister()
@@ -72,6 +77,7 @@ namespace WhereToEat.Controllers
                     {
                         new Claim("Id", userId.ToString()),
                         new Claim("Email",  register.Email),
+                        new Claim("Username", register.Username),
                     }, CookieAuthenticationDefaults.AuthenticationScheme)),
                     new AuthenticationProperties());
 
@@ -92,14 +98,15 @@ namespace WhereToEat.Controllers
                 return View();
             }
 
-            var userId = _userService.GetUserId(login.Email);
+            var user = _userService.GetUser(login.Email);
 
             await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                     {
-                        new Claim("Id", userId.ToString()),
+                        new Claim("Id", user.ID.ToString()),
                         new Claim("Email", login.Email),
+                        new Claim("Username", user.Name),
                     }, CookieAuthenticationDefaults.AuthenticationScheme)),
                     new AuthenticationProperties());
 
@@ -111,6 +118,17 @@ namespace WhereToEat.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult Details()
+        {
+            var email = HttpContext.User.FindFirstValue("Email");
+            var userId = Convert.ToInt32(HttpContext.User.FindFirstValue("Id"));
+
+            var comments = _commentService.GetAllCommentsForUser(userId);
+            var restaurants = _restaurantService.GetAllRestaurantForOwner(userId);
+            var user = _userService.GetUser(email);
+            return View(new UserDetailModel(user, restaurants, comments));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhereToEat.Models;
 
@@ -30,6 +31,15 @@ namespace WhereToEat.Controllers
                 restaurant.City, restaurant.ZipCode, restaurant.Address, image);
 
             return View();
+        }
+
+        //[Authorize]
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var restaurant = _restaurantService.GetRestaurantById(id);
+
+            return View(restaurant);
         }
     }
 }

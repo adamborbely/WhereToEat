@@ -12,15 +12,21 @@ namespace WhereToEat.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IRestaurantService _restaurantService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IRestaurantService restaurantService)
         {
             _logger = logger;
+            _restaurantService = restaurantService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var restaurants = _restaurantService.GetAll();
+            return View(new RestaurantListModel
+            {
+                Restaurants = restaurants.Select(x => new RestaurantModel(x)).ToList()
+            });
         }
 
 

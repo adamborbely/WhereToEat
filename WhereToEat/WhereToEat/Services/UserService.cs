@@ -3,11 +3,22 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using WhereToEat.Models;
 
 namespace WhereToEat.Services
 {
     public class UserService : IUserService
     {
+        private static UserModel ToUser(IDataReader reader)
+        {
+            return new UserModel
+            {
+                ID = (int)reader["user_id"],
+                Name = (string)reader["username"],
+                Email = (string)reader["email"],
+                IsOwner = (bool)reader["isOwner"],
+            };
+        }
         private readonly IDbConnection _connection;
 
         public UserService(IDbConnection connection)
@@ -63,6 +74,18 @@ namespace WhereToEat.Services
             reader.Read();
             int userId = Convert.ToInt32(reader["user_id"]);
             return userId;
+        }
+
+        public UserModel GetUser(string email)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = $"SELECT * FROM users WHERE email LIKE '{email}'";
+
+            using var reader = command.ExecuteReader();
+
+            reader.Read();
+            return ToUser(reader);
         }
 
     }

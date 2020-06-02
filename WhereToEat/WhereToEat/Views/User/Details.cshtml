@@ -1,0 +1,52 @@
+﻿@using System.Security.Claims
+@model WhereToEat.Models.UserDetailModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div>
+
+    @Html.DisplayFor(model => model.Name)
+    <br />
+
+    @*@if (!string.IsNullOrEmpty(Model.ImageURL))
+        {
+
+            <img class="restaurant-img" src="/uploads/@Model.ImageURL" />
+
+        }*@
+
+
+</div>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsOwner)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsOwner)
+        </dd>
+    </dl>
+
+</div>
+
+
+
+@*<div>
+        @{if (@Convert.ToInt32(Context.User.FindFirstValue("id")) == (@Model.OwnerID))
+            {
+                @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ })
+            }
+        }
+
+        <a asp-controller="Home" asp-action="Index">Back to List</a>
+    </div>*@

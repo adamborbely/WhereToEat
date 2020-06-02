@@ -12,12 +12,13 @@ namespace WhereToEat.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsOwner { get; set; }
-        public UserModel(int id, string email, string name, string password, bool isOwner)
+
+        public UserModel() { }
+        public UserModel(int id, string email, string name, bool isOwner)
         {
             ID = id;
             Email = email;
             Name = name;
-            Password = password;
             IsOwner = isOwner;
         }
     }

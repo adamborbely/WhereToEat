@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WhereToEat.Models
 {
@@ -13,6 +10,7 @@ namespace WhereToEat.Models
         public DateTime PostTime { get; set; }
         public string Message { get; set; }
 
+        public CommentModel() { }
         public CommentModel(int id, int userId, int restaurantId, DateTime postTime, string message)
         {
             Id = id;
@@ -20,6 +18,15 @@ namespace WhereToEat.Models
             RestaurantId = restaurantId;
             PostTime = postTime;
             Message = message;
+        }
+
+        public CommentModel(CommentModel comment)
+        {
+            Id = comment.Id;
+            UserId = comment.UserId;
+            RestaurantId = comment.RestaurantId;
+            PostTime = comment.PostTime;
+            Message = comment.Message;
         }
     }
 }

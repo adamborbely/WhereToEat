@@ -7,12 +7,11 @@
         public string City { get; set; }
         public int ZipCode { get; set; }
         public string Address { get; set; }
-        public double Rating { get; set; }
+        public decimal Rating { get; set; }
         public int OwnerID { get; set; }
-
         public string ImageURL { get; set; }
-
-        public RestaurantModel(int id, string name, string city, int zipCode, string address, double rating, int ownerId, string img)
+        public RestaurantModel() { }
+        public RestaurantModel(int id, string name, string city, int zipCode, string address, decimal rating, int ownerId, string img)
         {
             Id = id;
             Name = name;
@@ -22,6 +21,17 @@
             Rating = rating;
             OwnerID = ownerId;
             ImageURL = img;
+        }
+
+        public RestaurantModel(RestaurantModel restaurant)
+        {
+            Id = restaurant.Id;
+            Name = restaurant.Name;
+            City = restaurant.City;
+            Address = restaurant.Address;
+            Rating = restaurant.Rating;
+            ZipCode = restaurant.ZipCode;
+            ImageURL = restaurant.ImageURL;
         }
     }
 }

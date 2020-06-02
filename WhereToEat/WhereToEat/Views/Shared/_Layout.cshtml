@@ -39,7 +39,7 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Logout</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="DetailsOfCurrentUser">@Context.User.FindFirstValue("Email")</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Details">@Context.User.FindFirstValue("Username")</a>
                                 </li>
                             }
                         }
