@@ -9,7 +9,7 @@ namespace WhereToEat.Models
         public int RestaurantId { get; set; }
         public DateTime PostTime { get; set; }
         public string Message { get; set; }
-
+        public string Username { get; set; }
         public CommentModel() { }
         public CommentModel(int id, int userId, int restaurantId, DateTime postTime, string message)
         {
@@ -27,6 +27,7 @@ namespace WhereToEat.Models
             RestaurantId = comment.RestaurantId;
             PostTime = comment.PostTime;
             Message = comment.Message;
+            Username = comment.Username;
         }
     }
 }

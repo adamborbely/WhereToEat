@@ -77,7 +77,7 @@ namespace WhereToEat.Controllers
                     {
                         new Claim("Id", userId.ToString()),
                         new Claim("Email",  register.Email),
-                        new Claim("Username", register.Username),
+                        new Claim(" ", register.Username),
                     }, CookieAuthenticationDefaults.AuthenticationScheme)),
                     new AuthenticationProperties());
 

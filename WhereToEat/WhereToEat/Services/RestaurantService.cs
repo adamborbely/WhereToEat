@@ -119,5 +119,104 @@ namespace WhereToEat.Services
             }
             return restaurants;
         }
+
+        public void UpdateRestaurant(RestaurantRegisterModel restaurant, string image)
+        {
+            using var command = _connection.CreateCommand();
+
+            var nameParam = command.CreateParameter();
+            nameParam.ParameterName = "name";
+            nameParam.Value = restaurant.RestaurantName;
+
+            var addressParam = command.CreateParameter();
+            addressParam.ParameterName = "address";
+            addressParam.Value = restaurant.Address;
+
+            var cityParam = command.CreateParameter();
+            cityParam.ParameterName = "city";
+            cityParam.Value = restaurant.City;
+
+            var zipCodeParam = command.CreateParameter();
+            zipCodeParam.ParameterName = "zip_code";
+            zipCodeParam.Value = restaurant.ZipCode;
+
+            var restaurantIdParam = command.CreateParameter();
+            restaurantIdParam.ParameterName = "restaurant_id";
+            restaurantIdParam.Value = restaurant.Id;
+
+            if (restaurant.Image != null)
+            {
+                var imageParam = command.CreateParameter();
+                imageParam.ParameterName = "restaurant_imageURL";
+                imageParam.Value = image;
+
+                command.Parameters.Add(imageParam);
+
+                command.CommandText = "UPDATE restaurants SET name = @name, address = @address, city = @city," +
+                " zip_code = @zip_code, restaurant_imageUrl = @restaurant_imageUrl WHERE restaurant_id = @restaurant_id";
+            }
+            else
+            {
+                command.CommandText = "UPDATE restaurants SET name = @name, address = @address, city = @city," +
+                " zip_code = @zip_code WHERE restaurant_id = @restaurant_id";
+            }
+
+            command.Parameters.Add(nameParam);
+            command.Parameters.Add(addressParam);
+            command.Parameters.Add(cityParam);
+            command.Parameters.Add(zipCodeParam);
+
+            command.Parameters.Add(restaurantIdParam);
+
+            command.ExecuteNonQuery();
+        }
+
+        public int GetRestaurantIdByName(string restaurantName)
+        {
+            using var command = _connection.CreateCommand();
+            command.CommandText = @"SELECT restaurant_id FROM restaurants WHERE name = @name";
+
+            var nameParam = command.CreateParameter();
+            nameParam.ParameterName = "name";
+            nameParam.Value = restaurantName;
+
+            command.Parameters.Add(nameParam);
+            using var reader = command.ExecuteReader();
+            reader.Read();
+            int restaurantId = Convert.ToInt32(reader["restaurant_id"]);
+            return restaurantId;
+        }
+
+        public void DeleteRestaurant(int id)
+        {
+            using var command = _connection.CreateCommand();
+
+            var restaurantIdParam = command.CreateParameter();
+            restaurantIdParam.ParameterName = "restaurant_id";
+            restaurantIdParam.Value = id;
+
+            command.CommandText = @"DELETE FROM restaurants WHERE restaurant_id = @restaurant_id";
+            command.Parameters.Add(restaurantIdParam);
+
+            command.ExecuteReader();
+        }
+
+        public int GetRestaurantOwnerId(int restaurantId)
+        {
+            using var command = _connection.CreateCommand();
+
+            var restaurantIdParam = command.CreateParameter();
+            restaurantIdParam.ParameterName = "restaurant_id";
+            restaurantIdParam.Value = restaurantId;
+
+            command.CommandText = @"SELECT owner_id FROM restaurants WHERE restaurant_id = @restaurant_id";
+
+            command.Parameters.Add(restaurantIdParam);
+
+            using var reader = command.ExecuteReader();
+            reader.Read();
+            int ownerId = Convert.ToInt32(reader["owner_id"]);
+            return ownerId;
+        }
     }
 }

@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS restaurants CASCADE;
 DROP TABLE IF EXISTS categories CASCADE; 
 DROP TABLE IF EXISTS restaurant_category CASCADE;
 DROP TABLE IF EXISTS comments CASCADE;
+DROP TABLE IF EXISTS commentsToApprove CASCADE;
 
 CREATE TABLE users(
 	user_id SERIAL PRIMARY KEY,
@@ -24,11 +25,20 @@ CREATE TABLE restaurants(
 );
 
 CREATE TABLE comments(
-	comment_id SERIAL PRIMARY KEY,
+	comment_id INTEGER	 PRIMARY KEY,
 	user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
 	restaurant_id INTEGER NOT NULL REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
 	comment_time TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
 	message TEXT
+);
+
+CREATE TABLE commentsToApprove(
+	comment_id SERIAL PRIMARY KEY,
+	user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
+	restaurant_id INTEGER NOT NULL REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
+	comment_time TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+	message TEXT,
+	isApproved BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE categories(
@@ -41,4 +51,26 @@ CREATE TABLE restaurant_category(
 	category_id INTEGER NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
 	PRIMARY KEY(restaurant_id, category_id)
 );
+
+Create or replace function insertToComments()returns trigger as $$
+declare approved bool;
+begin
+SELECT isApproved FROM commentsToApprove WHERE comment_id = NEW.comment_id into approved;
+if approved = true
+then
+INSERT INTO comments (comment_id, user_id,restaurant_id, message) Values (New.comment_id, New.user_id, New.restaurant_id, New.message);
+end if;
+RETURN NULL;
+end;
+$$ language plpgsql;
+
+CREATE TRIGGER insertToComments_trigger
+after insert or update on commentsToApprove
+for each row execute function insertToComments();
+
+
+/*Update  commentsToApprove SET  isApproved = true Where comment_id = 2;
+INsert Into commentsToApprove (user_id, restaurant_id, message, isApproved) Values (1,1, 'kdacda', true)
+select * from restaurants
+select * from comments*/
 

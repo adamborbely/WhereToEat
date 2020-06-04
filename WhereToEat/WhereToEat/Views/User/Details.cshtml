@@ -5,18 +5,7 @@
     ViewData["Title"] = "Details";
 }
 <div>
-
-    @Html.DisplayFor(model => model.Name)
-    <br />
-
-    @*@if (!string.IsNullOrEmpty(Model.ImageURL))
-        {
-
-            <img class="restaurant-img" src="/uploads/@Model.ImageURL" />
-
-        }*@
-
-
+    <h1>@Html.DisplayFor(model => model.Name)</h1>
 </div>
 
 <div>
@@ -36,17 +25,47 @@
             @Html.DisplayFor(model => model.IsOwner)
         </dd>
     </dl>
-
 </div>
+<div class="restaurantOwnerDetail">
 
-
-
-@*<div>
-        @{if (@Convert.ToInt32(Context.User.FindFirstValue("id")) == (@Model.OwnerID))
-            {
-                @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ })
-            }
-        }
-
-        <a asp-controller="Home" asp-action="Index">Back to List</a>
-    </div>*@
+    @if (Model.IsOwner)
+    {
+        <hr />
+        <h2>Restaurant(s): </h2>
+        <br />
+        <div class="container">
+            <table class="table">
+                <tbody>
+                    @for (int i = 0; i < Model.Restaurants.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.Restaurants[i].Name</td>
+                            @*<th scope="row">
+                                    @if (!String.IsNullOrEmpty(Model.Restaurants[i].ImageURL))
+                                    {
+                                        <img class="restaurant-img" src="/uploads/@Model.Restaurants[i].ImageURL" style="width: 19px; height:19px" />
+                                    }
+                                </th>*@
+                            <th scope="row">
+                                <a asp-controller="Restaurant" asp-action="Edit" asp-route-id="@Model.Restaurants[i].Id">
+                                    <img src="~/images/Edit.png" style="width: 19px; height:19px" />
+                                </a>
+                            </th>
+                            <th scope="row">
+                                <a asp-controller="Restaurant" asp-action="Details" asp-route-id="@Model.Restaurants[i].Id">
+                                    <img src="~/images/Details.png" style="width: 19px; height:19px" />
+                                </a>
+                            </th>
+                            <th scope="row">
+                                <a asp-controller="Restaurant" asp-action="Delete" asp-route-id="@Model.Restaurants[i].Id">
+                                    <img src="~/images/Delete.png" style="width: 19px; height:19px" />
+                                </a>
+                            </th>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @Html.ActionLink("Add new restaurant", "AddRestaurant", "Restaurant")
+    }
+</div>

@@ -1,19 +1,17 @@
 ﻿@using System.Security.Claims
-@model WhereToEat.Models.RestaurantModel
+@model WhereToEat.Models.RestaurantDetailsModel
 
 @{
     ViewData["Title"] = "Details";
 }
 <div>
+    <h2> @Html.DisplayFor(model => model.Name) </h2>
 
-    @Html.DisplayFor(model => model.Name)
     <br />
 
     @if (!string.IsNullOrEmpty(Model.ImageURL))
     {
-
         <img class="restaurant-img" src="/uploads/@Model.ImageURL" />
-
     }
 
 
@@ -50,15 +48,47 @@
     </dl>
 
 </div>
-
-
-
 <div>
-    @{if (@Convert.ToInt32(Context.User.FindFirstValue("id")) == (@Model.OwnerID))
-        {
-            @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ })
-        }
+    @if (Model.Comments.Count > 0)
+    {
+        <hr />
+        <h5>Comment(s): </h5>
+        <br />
+        <div class="container">
+            <table class="table">
+                <tbody>
+                    @for (int i = 0; i < Model.Comments.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.Comments[i].Message</td>
+                            <th scope="row">
+                                <a>
+                                    @Model.Comments[i].PostTime
+                                </a>
+                            </th>
+                            <th scope="row">
+                                <a>
+                                    @Model.Comments[i].Username
+                                </a>
+                            </th>
+                            @*<th scope="row">
+                                    <a asp-controller="Restaurant" asp-action="Details" asp-route-id="@Model.Restaurants[i].Id">
+                                        <img src="~/images/Details.png" style="width: 19px; height:19px" />
+                                    </a>
+                                </th>
+                                <th scope="row">
+                                    <a asp-controller="Restaurant" asp-action="Delete" asp-route-id="@Model.Restaurants[i].Id">
+                                        <img src="~/images/Delete.png" style="width: 19px; height:19px" />
+                                    </a>
+                                </th>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
     }
 
+    <a asp-controller="Comment" asp-action="AddComment" asp-route-restaurantId="@Model.Id">Add Comment</a>
     <a asp-controller="Home" asp-action="Index">Back to List</a>
 </div>

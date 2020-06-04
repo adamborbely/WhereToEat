@@ -9,6 +9,9 @@ namespace WhereToEat.Controllers
         public List<RestaurantModel> GetAll();
         public RestaurantModel GetRestaurantById(int id);
         public List<RestaurantModel> GetAllRestaurantForOwner(int id);
-
+        public void UpdateRestaurant(RestaurantRegisterModel restaurant, string image);
+        public int GetRestaurantIdByName(string restaurantName);
+        public void DeleteRestaurant(int id);
+        public int GetRestaurantOwnerId(int restaurantId);
     }
 }

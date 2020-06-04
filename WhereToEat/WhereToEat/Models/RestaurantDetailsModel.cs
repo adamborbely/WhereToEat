@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WhereToEat.Models
 {
-    public class RestaurantModel
+    public class RestaurantDetailsModel
     {
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string City { get; set; }
@@ -12,28 +16,20 @@ namespace WhereToEat.Models
         public decimal Rating { get; set; }
         public int OwnerID { get; set; }
         public string ImageURL { get; set; }
-        public RestaurantModel() { }
-        public RestaurantModel(int id, string name, string city, int zipCode, string address, decimal rating, int ownerId, string img)
-        {
-            Id = id;
-            Name = name;
-            City = city;
-            ZipCode = zipCode;
-            Address = address;
-            Rating = rating;
-            OwnerID = ownerId;
-            ImageURL = img;
-        }
-
-        public RestaurantModel(RestaurantModel restaurant)
+        public List<CommentModel> Comments { get; set; }
+        public RestaurantDetailsModel() { }
+        public RestaurantDetailsModel(RestaurantModel restaurant, List<CommentModel> comments)
         {
             Id = restaurant.Id;
             Name = restaurant.Name;
             City = restaurant.City;
+            ZipCode = restaurant.ZipCode;
             Address = restaurant.Address;
             Rating = restaurant.Rating;
-            ZipCode = restaurant.ZipCode;
+            OwnerID = restaurant.OwnerID;
             ImageURL = restaurant.ImageURL;
+            Comments = comments.Select(x => new CommentModel(x)).ToList();
         }
+
     }
 }
