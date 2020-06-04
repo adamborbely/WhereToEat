@@ -1,5 +1,4 @@
-﻿@using System.Security.Claims
-@model WhereToEat.Models.UserDetailModel
+﻿@model WhereToEat.Models.UserDetailModel
 
 @{
     ViewData["Title"] = "Details";
@@ -19,7 +18,7 @@
 
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsOwner)
+            Restaurant owner
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsOwner)
@@ -27,7 +26,6 @@
     </dl>
 </div>
 <div class="restaurantOwnerDetail">
-
     @if (Model.IsOwner)
     {
         <hr />
@@ -35,17 +33,19 @@
         <br />
         <div class="container">
             <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Details</th>
+                        <th scope="col">Remove</th>
+                    </tr>
+                </thead>
                 <tbody>
                     @for (int i = 0; i < Model.Restaurants.Count; i++)
                     {
                         <tr>
                             <td>@Model.Restaurants[i].Name</td>
-                            @*<th scope="row">
-                                    @if (!String.IsNullOrEmpty(Model.Restaurants[i].ImageURL))
-                                    {
-                                        <img class="restaurant-img" src="/uploads/@Model.Restaurants[i].ImageURL" style="width: 19px; height:19px" />
-                                    }
-                                </th>*@
                             <th scope="row">
                                 <a asp-controller="Restaurant" asp-action="Edit" asp-route-id="@Model.Restaurants[i].Id">
                                     <img src="~/images/Edit.png" style="width: 19px; height:19px" />
@@ -67,5 +67,62 @@
             </table>
         </div>
         @Html.ActionLink("Add new restaurant", "AddRestaurant", "Restaurant")
+    }
+</div>
+<div class="userComments">
+    @if (Model.Comments.Count > 0)
+    {
+        <hr />
+        <h2>Your Comment(s): </h2>
+        <br />
+        <div class="container">
+            <table class="table">
+                <tbody>
+                    @for (int i = 0; i < Model.Comments.Count; i++)
+                    {
+                        <tr>
+                            <td><a asp-controller="Restaurant" asp-action="Details" asp-route-id="@Model.Comments[i].RestaurantId">@Model.Comments[i].Message</a></td>
+                            <th scope="row">
+                                <a asp-controller="Comment" asp-action="Delete" asp-route-id="@Model.Comments[i].Id">
+                                    <img src="~/images/Delete.png" style="width: 19px; height:19px" />
+                                </a>
+                            </th>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+<div class="pendingComments">
+    @if (Model.PendingComments.Count > 0)
+    {
+        <hr />
+        <h2>Pending Comment(s): </h2>
+        <br />
+        <div class="container">
+            <table class="table">
+                <tbody>
+                    @for (int i = 0; i < Model.PendingComments.Count; i++)
+                    {
+                        <tr>
+                            <td><a asp-controller="Restaurant" asp-action="Details" asp-route-id="@Model.PendingComments[i].RestaurantId">@Model.PendingComments[i].Message</a></td>
+                            <th scope="row">
+                                <a asp-controller="Comment" asp-action="Accept" asp-route-id="@Model.PendingComments[i].Id">
+                                    <img src="~/images/Accept.png" style="width: 19px; height:19px" />
+                                </a>
+                            </th>
+                            <th scope="row">
+                                <a asp-controller="Comment" asp-action="Dismiss" asp-route-id="@Model.PendingComments[i].Id">
+                                    <img src="~/images/Delete.png" style="width: 19px; height:19px" />
+                                </a>
+                            </th>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>

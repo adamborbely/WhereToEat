@@ -43,6 +43,21 @@ namespace WhereToEat.Controllers
             }
             return RedirectToAction("Details", "Restaurant", new { id = comment.RestaurantId });
         }
+        public IActionResult Delete(int id)
+        {
+            _commentService.DeleteComment(id);
 
+            return RedirectToAction("Details", "User");
+        }
+        public IActionResult Dismiss(int id)
+        {
+            _commentService.DismissPendingComment(id);
+            return RedirectToAction("Details", "User");
+        }
+        public IActionResult Accept(int id)
+        {
+            _commentService.AcceptPendingComment(id);
+            return RedirectToAction("Details", "User");
+        }
     }
 }

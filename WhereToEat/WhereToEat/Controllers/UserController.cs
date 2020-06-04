@@ -128,7 +128,9 @@ namespace WhereToEat.Controllers
             var comments = _commentService.GetAllCommentsForUser(userId);
             var restaurants = _restaurantService.GetAllRestaurantForOwner(userId);
             var user = _userService.GetUser(email);
-            return View(new UserDetailModel(user, restaurants, comments));
+            var pendingComments = _commentService.GetPendingComments(userId);
+
+            return View(new UserDetailModel(user, restaurants, comments, pendingComments));
         }
     }
 }

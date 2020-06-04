@@ -17,7 +17,6 @@ namespace WhereToEat.Services
                 Message = (string)reader["message"],
                 PostTime = (DateTime)reader["comment_time"],
                 RestaurantId = (int)reader["restaurant_id"],
-                Username = (string)reader["username"],
             };
         }
 
@@ -85,7 +84,7 @@ namespace WhereToEat.Services
             using var command = _connection.CreateCommand();
 
             command.CommandText = @"SELECT comments.*, users.username FROM comments Join users Using (user_id) WHERE comments.restaurant_id = @restaurant_id";
-            //SELECT table1.*, table2.col1, table2.col3 FROM table1 JOIN table2 USING(id)
+
             var idParam = command.CreateParameter();
             idParam.ParameterName = "restaurant_id";
             idParam.Value = restaurantId;
@@ -96,9 +95,76 @@ namespace WhereToEat.Services
             List<CommentModel> comments = new List<CommentModel>();
             while (reader.Read())
             {
-                comments.Add(ToComment(reader));
+                var commentToAdd = ToComment(reader);
+                commentToAdd.Username = (string)reader["username"];
+                comments.Add(commentToAdd);
             }
             return comments;
+        }
+
+        public void DeleteComment(int commentId)
+        {
+            using var command = _connection.CreateCommand();
+
+            var commentIdParam = command.CreateParameter();
+            commentIdParam.ParameterName = "comment_id";
+            commentIdParam.Value = commentId;
+
+            command.CommandText = @"DELETE FROM comments WHERE comment_id = @comment_id";
+            command.Parameters.Add(commentIdParam);
+
+            command.ExecuteReader();
+        }
+
+        public List<CommentModel> GetPendingComments(int restaurantOwnerId)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"SELECT * FROM commentsToApprove WHERE restaurant_id IN 
+                (SELECT restaurant_id FROM restaurants WHERE owner_id = @owner_id AND isapproved = false)";
+
+            var restaurantOwnerIdParam = command.CreateParameter();
+            restaurantOwnerIdParam.ParameterName = "owner_id";
+            restaurantOwnerIdParam.Value = restaurantOwnerId;
+
+            command.Parameters.Add(restaurantOwnerIdParam);
+
+            using var reader = command.ExecuteReader();
+            List<CommentModel> comments = new List<CommentModel>();
+            while (reader.Read())
+            {
+                var commentToAdd = ToComment(reader);
+                comments.Add(commentToAdd);
+            }
+            return comments;
+        }
+
+        public void DismissPendingComment(int commentId)
+        {
+            using var command = _connection.CreateCommand();
+
+            var commentIdParam = command.CreateParameter();
+            commentIdParam.ParameterName = "comment_id";
+            commentIdParam.Value = commentId;
+
+            command.CommandText = "UPDATE commentsToApprove SET isapproved = Null WHERE comment_id = @comment_id";
+            command.Parameters.Add(commentIdParam);
+
+            command.ExecuteReader();
+        }
+
+        public void AcceptPendingComment(int commentId)
+        {
+            using var command = _connection.CreateCommand();
+
+            var commentIdParam = command.CreateParameter();
+            commentIdParam.ParameterName = "comment_id";
+            commentIdParam.Value = commentId;
+
+            command.CommandText = "UPDATE commentsToApprove SET isapproved = true WHERE comment_id = @comment_id";
+            command.Parameters.Add(commentIdParam);
+
+            command.ExecuteReader();
         }
     }
 }

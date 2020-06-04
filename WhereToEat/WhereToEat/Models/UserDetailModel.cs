@@ -13,8 +13,9 @@ namespace WhereToEat.Models
         public bool IsOwner { get; set; }
         public List<RestaurantModel> Restaurants { get; set; }
         public List<CommentModel> Comments { get; set; }
+        public List<CommentModel> PendingComments { get; set; }
 
-        public UserDetailModel(UserModel user, List<RestaurantModel> restaurants, List<CommentModel> comments)
+        public UserDetailModel(UserModel user, List<RestaurantModel> restaurants, List<CommentModel> comments, List<CommentModel> pendingComments)
         {
             Id = user.ID;
             Name = user.Name;
@@ -22,6 +23,7 @@ namespace WhereToEat.Models
             IsOwner = user.IsOwner;
             Restaurants = restaurants.Select(x => new RestaurantModel(x)).ToList();
             Comments = comments.Select(x => new CommentModel(x)).ToList();
+            PendingComments = pendingComments.Select(x => new CommentModel(x)).ToList();
         }
 
     }
