@@ -9,8 +9,10 @@ namespace WhereToEat.Controllers
         public List<CommentModel> GetAllCommentsForRestaurant(int restaurantId);
         public List<CommentModel> GetAllCommentsForUser(int userId);
         public void DeleteComment(int commentId);
-        public List<CommentModel> GetPendingComments(int restaurantOwnerId);
+        public List<PendingCommentModel> GetPendingComments(int restaurantOwnerId);
         public void DismissPendingComment(int commentId);
         public void AcceptPendingComment(int commentId);
+        public List<PendingCommentModel> GetUsersPendingComments(int userId);
+        public void DeletePending(int commentId);
     }
 }

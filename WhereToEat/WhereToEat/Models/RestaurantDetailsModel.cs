@@ -17,8 +17,9 @@ namespace WhereToEat.Models
         public int OwnerID { get; set; }
         public string ImageURL { get; set; }
         public List<CommentModel> Comments { get; set; }
+        public List<CategoryModel> Categories { get; set; }
         public RestaurantDetailsModel() { }
-        public RestaurantDetailsModel(RestaurantModel restaurant, List<CommentModel> comments)
+        public RestaurantDetailsModel(RestaurantModel restaurant, List<CommentModel> comments, List<CategoryModel> categories)
         {
             Id = restaurant.Id;
             Name = restaurant.Name;
@@ -29,6 +30,7 @@ namespace WhereToEat.Models
             OwnerID = restaurant.OwnerID;
             ImageURL = restaurant.ImageURL;
             Comments = comments.Select(x => new CommentModel(x)).ToList();
+            Categories = categories.Select(x => new CategoryModel(x)).ToList();
         }
 
     }

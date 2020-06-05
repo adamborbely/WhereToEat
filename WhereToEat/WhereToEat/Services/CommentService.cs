@@ -19,6 +19,18 @@ namespace WhereToEat.Services
                 RestaurantId = (int)reader["restaurant_id"],
             };
         }
+        private static PendingCommentModel ToPendingComment(IDataReader reader)
+        {
+            return new PendingCommentModel
+            {
+                Id = (int)reader["comment_id"],
+                UserId = (int)reader["user_id"],
+                Message = (string)reader["message"],
+                PostTime = (DateTime)reader["comment_time"],
+                RestaurantId = (int)reader["restaurant_id"],
+                RestaurantName = (string)reader["name"],
+            };
+        }
 
         private readonly IDbConnection _connection;
 
@@ -116,12 +128,16 @@ namespace WhereToEat.Services
             command.ExecuteReader();
         }
 
-        public List<CommentModel> GetPendingComments(int restaurantOwnerId)
+        public List<PendingCommentModel> GetPendingComments(int restaurantOwnerId)
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = @"SELECT * FROM commentsToApprove WHERE restaurant_id IN 
-                (SELECT restaurant_id FROM restaurants WHERE owner_id = @owner_id AND isapproved = false)";
+            command.CommandText = @"SELECT commentsToapprove.*, restaurants.name
+                                    FROM commentsToApprove
+                                    JOIN restaurants USING(restaurant_id) 
+                                    WHERE commentsToApprove.restaurant_id IN 
+                                    (SELECT restaurant_id FROM restaurants 
+                                    WHERE owner_id = @owner_id AND isapproved = false)";
 
             var restaurantOwnerIdParam = command.CreateParameter();
             restaurantOwnerIdParam.ParameterName = "owner_id";
@@ -130,11 +146,10 @@ namespace WhereToEat.Services
             command.Parameters.Add(restaurantOwnerIdParam);
 
             using var reader = command.ExecuteReader();
-            List<CommentModel> comments = new List<CommentModel>();
+            List<PendingCommentModel> comments = new List<PendingCommentModel>();
             while (reader.Read())
             {
-                var commentToAdd = ToComment(reader);
-                comments.Add(commentToAdd);
+                comments.Add(ToPendingComment(reader));
             }
             return comments;
         }
@@ -166,5 +181,56 @@ namespace WhereToEat.Services
 
             command.ExecuteReader();
         }
+
+        public List<PendingCommentModel> GetUsersPendingComments(int userId)
+        {
+            using var command = _connection.CreateCommand();
+
+            command.CommandText = @"SELECT commentsToapprove.*, restaurants.name
+                                    FROM commentsToApprove
+                                    JOIN restaurants USING(restaurant_id) 
+                                    WHERE user_id = @user_id 
+                                    AND (isapproved = false 
+                                    OR isapproved is null)";
+
+            var restaurantOwnerIdParam = command.CreateParameter();
+            restaurantOwnerIdParam.ParameterName = "user_id";
+            restaurantOwnerIdParam.Value = userId;
+
+            command.Parameters.Add(restaurantOwnerIdParam);
+
+            using var reader = command.ExecuteReader();
+            List<PendingCommentModel> comments = new List<PendingCommentModel>();
+            while (reader.Read())
+            {
+                var commentToAdd = ToPendingComment(reader);
+                if (reader["isapproved"] is DBNull)
+                {
+                    commentToAdd.IsApproved = null;
+                }
+                else
+                {
+                    commentToAdd.IsApproved = (bool?)reader["isapproved"];
+                }
+
+                comments.Add(commentToAdd);
+            }
+            return comments;
+        }
+
+        public void DeletePending(int commentId)
+        {
+            using var command = _connection.CreateCommand();
+
+            var commentIdParam = command.CreateParameter();
+            commentIdParam.ParameterName = "comment_id";
+            commentIdParam.Value = commentId;
+
+            command.CommandText = @"DELETE FROM commentsToApprove WHERE comment_id = @comment_id";
+            command.Parameters.Add(commentIdParam);
+
+            command.ExecuteReader();
+        }
     }
 }
+

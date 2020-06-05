@@ -59,5 +59,10 @@ namespace WhereToEat.Controllers
             _commentService.AcceptPendingComment(id);
             return RedirectToAction("Details", "User");
         }
+        public IActionResult DeletePending(int id)
+        {
+            _commentService.DeletePending(id);
+            return RedirectToAction("Details", "User");
+        }
     }
 }

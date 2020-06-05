@@ -11,12 +11,14 @@ namespace WhereToEat.Controllers
         private readonly IRestaurantService _restaurantService;
         private readonly IStorageService _storageService;
         private readonly ICommentService _commentService;
+        private readonly ICategoryService _categoryService;
 
-        public RestaurantController(IRestaurantService restService, IStorageService storageService, ICommentService commentService)
+        public RestaurantController(IRestaurantService restService, IStorageService storageService, ICommentService commentService, ICategoryService categoryService)
         {
             _restaurantService = restService;
             _storageService = storageService;
             _commentService = commentService;
+            _categoryService = categoryService;
         }
 
         public IActionResult AddRestaurant()
@@ -44,7 +46,9 @@ namespace WhereToEat.Controllers
         {
             var restaurant = _restaurantService.GetRestaurantById(id);
             var comments = _commentService.GetAllCommentsForRestaurant(id);
-            var restaurantDetailModel = new RestaurantDetailsModel(restaurant, comments);
+            var categories = _categoryService.GetCategoriesForRest(id);
+
+            var restaurantDetailModel = new RestaurantDetailsModel(restaurant, comments, categories);
 
             return View(restaurantDetailModel);
         }

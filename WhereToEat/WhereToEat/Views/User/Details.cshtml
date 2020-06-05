@@ -77,6 +77,7 @@
         <br />
         <div class="container">
             <table class="table">
+
                 <tbody>
                     @for (int i = 0; i < Model.Comments.Count; i++)
                     {
@@ -95,31 +96,96 @@
         </div>
     }
 </div>
-<div class="pendingComments">
-    @if (Model.PendingComments.Count > 0)
+<div class="RestaurantPendingComments">
+    @if (Model.RestaurantsPendingComments.Count > 0)
     {
         <hr />
-        <h2>Pending Comment(s): </h2>
+        <h2>Restaurant Pending Comment(s): </h2>
         <br />
         <div class="container">
             <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Restaurant Name</th>
+                        <th scope="col">Comment</th>
+                        <th scope="col">Accept</th>
+                        <th scope="col">Decline</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    @for (int i = 0; i < Model.PendingComments.Count; i++)
+                    @for (int i = 0; i < Model.RestaurantsPendingComments.Count; i++)
                     {
                         <tr>
-                            <td><a asp-controller="Restaurant" asp-action="Details" asp-route-id="@Model.PendingComments[i].RestaurantId">@Model.PendingComments[i].Message</a></td>
+                            <td><a asp-controller="Restaurant" asp-action="Details" asp-route-id="@Model.RestaurantsPendingComments[i].RestaurantId">@Model.RestaurantsPendingComments[i].RestaurantName</a></td>
                             <th scope="row">
-                                <a asp-controller="Comment" asp-action="Accept" asp-route-id="@Model.PendingComments[i].Id">
+                                <a>
+                                    @Model.RestaurantsPendingComments[i].Message
+                                </a>
+                            </th>
+                            <th scope="row">
+                                <a asp-controller="Comment" asp-action="Accept" asp-route-id="@Model.RestaurantsPendingComments[i].Id">
                                     <img src="~/images/Accept.png" style="width: 19px; height:19px" />
                                 </a>
                             </th>
                             <th scope="row">
-                                <a asp-controller="Comment" asp-action="Dismiss" asp-route-id="@Model.PendingComments[i].Id">
+                                <a asp-controller="Comment" asp-action="Dismiss" asp-route-id="@Model.RestaurantsPendingComments[i].Id">
                                     <img src="~/images/Delete.png" style="width: 19px; height:19px" />
                                 </a>
                             </th>
 
                         </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+<div class="UserPndingComments">
+    @if (Model.NotApprovedComments.Count > 0)
+    {
+        <hr />
+        <h2>Your Pending Comment(s): </h2>
+        <br />
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Restaurant Name</th>
+                        <th scope="col">Comment</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.NotApprovedComments.Count; i++)
+                    {
+                    <tr>
+                        <td><a asp-controller="Restaurant" asp-action="Details" asp-route-id="@Model.NotApprovedComments[i].RestaurantId">@Model.NotApprovedComments[i].RestaurantName</a></td>
+                        <th scope="row">
+                            <a>
+                                @Model.NotApprovedComments[i].Message
+                            </a>
+                        </th>
+
+                        @if (Model.NotApprovedComments[i].IsApproved == false)
+                        {
+                            <th scope="row">
+                                <a>Waiting for accept</a>
+                            </th>
+                            <th scope="row">
+                                <a asp-controller="Comment" asp-action="DeletePending" asp-route-id="@Model.NotApprovedComments[i].Id">
+                                    <img src="~/images/Delete.png" style="width: 19px; height:19px" />
+                                </a>
+                            </th>
+                        }
+                        else
+                        {
+                            <th scope="row">
+                                <a>Declined!</a>
+                            </th>
+                        }
+
+                    </tr>
                     }
                 </tbody>
             </table>
