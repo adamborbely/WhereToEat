@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS restaurant_category CASCADE;
 DROP TABLE IF EXISTS comments CASCADE;
 DROP TABLE IF EXISTS commentsToApprove CASCADE;
+DROP TABLE IF EXISTS user_rating CASCADE;
 
 CREATE TABLE users(
 	user_id SERIAL PRIMARY KEY,
@@ -52,6 +53,13 @@ CREATE TABLE restaurant_category(
 	PRIMARY KEY(restaurant_id, category_id)
 );
 
+CREATE TABLE user_rating(
+	restaurant_id INTEGER REFERENCES restaurants(restaurant_id) ON DELETE SET NULL,
+	user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
+	rating INTEGER CHECK (rating <= 5)
+	PRIMARY KEY(restaurant_id, user_id)
+);
+
 Create or replace function insertToComments()returns trigger as $$
 declare approved bool;
 begin
@@ -74,3 +82,16 @@ INsert Into commentsToApprove (user_id, restaurant_id, message, isApproved) Valu
 select * from restaurants
 select * from comments*/
 
+INSERT INTO users (username, email, password, isOwner) VALUES ('admin', 'admin@admin.com', '2c+qROtqotsZWgY1wXh5OIukwbD5oi3iiRz09ReHlEhIlvYg', true);
+
+INSERT Into categories (name) Values ('Bakery');
+INSERT Into categories (name) Values ('Fast-food');
+INSERT Into categories (name) Values ('Fine dining');
+INSERT Into categories (name) Values ('Hungarian');
+INSERT Into categories (name) Values ('Indian');
+INSERT Into categories (name) Values ('Pizzeria');
+INSERT Into categories (name) Values ('Mexican');
+INSERT Into categories (name) Values ('Hamburger');
+INSERT Into categories (name) Values ('Fish and chips');
+INSERT Into categories (name) Values ('All you can eat');
+INSERT Into categories (name) Values ('Vegan');

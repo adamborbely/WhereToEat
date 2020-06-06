@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +14,16 @@ namespace WhereToEat.Controllers
         private readonly IStorageService _storageService;
         private readonly ICommentService _commentService;
         private readonly ICategoryService _categoryService;
+        private readonly IRatingService _ratingService;
 
-        public RestaurantController(IRestaurantService restService, IStorageService storageService, ICommentService commentService, ICategoryService categoryService)
+        public RestaurantController(IRestaurantService restService, IStorageService storageService, ICommentService commentService,
+                                    ICategoryService categoryService, IRatingService ratingService)
         {
             _restaurantService = restService;
             _storageService = storageService;
             _commentService = commentService;
             _categoryService = categoryService;
+            _ratingService = ratingService;
         }
 
         public IActionResult AddRestaurant()
@@ -47,8 +52,20 @@ namespace WhereToEat.Controllers
             var restaurant = _restaurantService.GetRestaurantById(id);
             var comments = _commentService.GetAllCommentsForRestaurant(id);
             var categories = _categoryService.GetCategoriesForRest(id);
+            var userRating = 0;
+
+            try
+            {
+                var userId = Convert.ToInt32(HttpContext.User.FindFirstValue("Id"));
+                userRating = _ratingService.GetUserRatingByRestaurantId(id, userId);
+            }
+            catch (InvalidOperationException)
+            {
+            }
+
 
             var restaurantDetailModel = new RestaurantDetailsModel(restaurant, comments, categories);
+            restaurantDetailModel.UserRating = userRating;
 
             return View(restaurantDetailModel);
         }
@@ -81,6 +98,13 @@ namespace WhereToEat.Controllers
             _restaurantService.DeleteRestaurant(id);
 
             return RedirectToAction("Details", "User");
+        }
+        public IActionResult AddRating(int rating, int restaurantId)
+        {
+            var userId = Convert.ToInt32(HttpContext.User.FindFirstValue("Id"));
+            _ratingService.AddRating(rating, userId, restaurantId);
+
+            return RedirectToAction("Details", new { id = restaurantId });
         }
     }
 }

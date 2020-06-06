@@ -16,6 +16,7 @@ namespace WhereToEat.Models
         public decimal Rating { get; set; }
         public int OwnerID { get; set; }
         public string ImageURL { get; set; }
+        public int UserRating { get; set; }
         public List<CommentModel> Comments { get; set; }
         public List<CategoryModel> Categories { get; set; }
         public RestaurantDetailsModel() { }

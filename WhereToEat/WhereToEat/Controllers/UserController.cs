@@ -110,7 +110,7 @@ namespace WhereToEat.Controllers
                     }, CookieAuthenticationDefaults.AuthenticationScheme)),
                     new AuthenticationProperties());
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Details", "User");
         }
 
         [HttpGet]

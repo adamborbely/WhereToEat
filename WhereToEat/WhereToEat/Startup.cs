@@ -44,6 +44,7 @@ namespace WhereToEat
             services.AddControllersWithViews();
             services.AddScoped<IPasswordHelper, PasswordEncrypt>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<ICommentService, CommentService>();

@@ -42,7 +42,7 @@ namespace WhereToEat.Services
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = @"SELECT * FROM comments WHERE user_id = @user_id";
+            command.CommandText = @"SELECT * FROM comments WHERE user_id = @user_id ORDER BY comment_time DESC";
 
             var idParam = command.CreateParameter();
             idParam.ParameterName = "user_id";
@@ -95,7 +95,7 @@ namespace WhereToEat.Services
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = @"SELECT comments.*, users.username FROM comments Join users Using (user_id) WHERE comments.restaurant_id = @restaurant_id";
+            command.CommandText = @"SELECT comments.*, users.username FROM comments Join users Using (user_id) WHERE comments.restaurant_id = @restaurant_id ORDER BY comment_time DESC";
 
             var idParam = command.CreateParameter();
             idParam.ParameterName = "restaurant_id";

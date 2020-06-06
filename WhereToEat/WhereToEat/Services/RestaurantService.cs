@@ -73,7 +73,8 @@ namespace WhereToEat.Services
         {
             using var command = _connection.CreateCommand();
 
-            command.CommandText = "SELECT * FROM restaurants";
+            command.CommandText = "SELECT * FROM restaurants " +
+                                  "ORDER BY rating DESC";
 
             using var reader = command.ExecuteReader();
             List<RestaurantModel> restaurants = new List<RestaurantModel>();

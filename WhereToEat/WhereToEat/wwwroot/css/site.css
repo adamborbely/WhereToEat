@@ -74,8 +74,42 @@ body {
 }
 
 .restaurant-img {
-  
     width: 40%;
     height: 40%;
     background-position: center;
+}
+
+.restaurantDetailsName {
+    width: 90%;
+    height: 200px;
+    margin: auto;
+    padding: 10px;
+}
+
+.restaurantName {
+    width: 50%;
+    height: 200px;
+    float: left;
+}
+
+.restaurantImage {
+    margin-left: 50%;
+    height: 200px;
+}
+
+.restaurantDetails {
+    height: 170px;
+    margin: auto;
+    padding: 10px;
+}
+
+.restaurantInformations {
+    width: 50%;
+    height: 170px;
+    float: left;
+}
+
+.userRatingRestaurant {
+    margin-left: 50%;
+    height: 200px;
 }
