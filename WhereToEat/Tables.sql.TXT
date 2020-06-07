@@ -29,7 +29,7 @@ CREATE TABLE comments(
 	comment_id INTEGER	 PRIMARY KEY,
 	user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
 	restaurant_id INTEGER NOT NULL REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
-	comment_time TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+	comment_time TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),	
 	message TEXT
 );
 
@@ -76,6 +76,29 @@ CREATE TRIGGER insertToComments_trigger
 after insert or update on commentsToApprove
 for each row execute function insertToComments();
 
+Create or replace function updateRestaurantRating()returns trigger as $$
+declare 
+	restaurant_rating NUMERIC (3,2);
+	temp_restaurant_id INTEGER;
+begin
+IF (TG_OP = 'DELETE') THEN
+	temp_restaurant_id = OLD.restaurant_id;
+	SELECT AVG(rating) FROM user_rating WHERE restaurant_id = OLD.restaurant_id into restaurant_rating;
+End if;
+IF (TG_OP = 'INSERT') THEN
+	temp_restaurant_id = NEW.restaurant_id;
+	SELECT AVG(rating) FROM user_rating WHERE restaurant_id = NEW.restaurant_id into restaurant_rating;
+END if;
+if restaurant_rating > 0 then
+	UPDATE restaurants  SET rating = restaurant_rating WHERE restaurant_id = temp_restaurant_id;
+end if;
+RETURN NULL;
+end;
+$$ language plpgsql;
+
+CREATE TRIGGER updateRestaurantRating_trigger
+after INSERT or DELETE on user_rating
+for each row execute function updateRestaurantRating();
 
 /*Update  commentsToApprove SET  isApproved = true Where comment_id = 2;
 INsert Into commentsToApprove (user_id, restaurant_id, message, isApproved) Values (1,1, 'kdacda', true)
@@ -95,3 +118,7 @@ INSERT Into categories (name) Values ('Hamburger');
 INSERT Into categories (name) Values ('Fish and chips');
 INSERT Into categories (name) Values ('All you can eat');
 INSERT Into categories (name) Values ('Vegan');
+
+INSERT INTO restaurant_category (restaurant_id, category_id) VALUES (1,1);
+
+INSERT INTO restaurants (name, city, zip_code, address, rating, owner_id) VALUES ('Hamburgers', 'Budapest', 1002, 'Petofi u. 2', 3.2,1);

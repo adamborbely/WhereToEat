@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using WhereToEat.Controllers;
 
 namespace WhereToEat.Services
@@ -39,6 +36,26 @@ namespace WhereToEat.Services
             command.Parameters.Add(userIdParam);
             command.Parameters.Add(restaurantIdParam);
 
+
+            command.ExecuteNonQuery();
+        }
+
+        public void DeleteRating(int userId, int restaurantId)
+        {
+            using var command = _connection.CreateCommand();
+
+            var userIdParam = command.CreateParameter();
+            userIdParam.ParameterName = "user_id";
+            userIdParam.Value = userId;
+
+            var restaurantIdParam = command.CreateParameter();
+            restaurantIdParam.ParameterName = "restaurant_id";
+            restaurantIdParam.Value = restaurantId;
+
+            command.CommandText = @"DELETE FROM user_rating WHERE restaurant_id = @restaurant_id AND user_id = @user_id";
+
+            command.Parameters.Add(userIdParam);
+            command.Parameters.Add(restaurantIdParam);
 
             command.ExecuteNonQuery();
         }

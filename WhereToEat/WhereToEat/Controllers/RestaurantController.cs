@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WhereToEat.Models;
@@ -63,7 +62,6 @@ namespace WhereToEat.Controllers
             {
             }
 
-
             var restaurantDetailModel = new RestaurantDetailsModel(restaurant, comments, categories);
             restaurantDetailModel.UserRating = userRating;
 
@@ -72,9 +70,9 @@ namespace WhereToEat.Controllers
 
         public IActionResult Edit(int id)
         {
-
             var restaurant = _restaurantService.GetRestaurantById(id);
             var restaurantRegisterModel = new RestaurantRegisterModel(restaurant);
+
             return View(restaurantRegisterModel);
         }
 
@@ -85,7 +83,6 @@ namespace WhereToEat.Controllers
             string imageFileName = restaurant.Image?.FileName;
             using Stream imageStream = restaurant.Image?.OpenReadStream();
             string image = imageFileName == null ? null : _storageService.Save(imageFileName, imageStream);
-
 
             _restaurantService.UpdateRestaurant(restaurant, image);
 
@@ -106,5 +103,13 @@ namespace WhereToEat.Controllers
 
             return RedirectToAction("Details", new { id = restaurantId });
         }
+        public IActionResult DeleteRating(int restaurantId)
+        {
+            var userId = Convert.ToInt32(HttpContext.User.FindFirstValue("Id"));
+            _ratingService.DeleteRating(userId, restaurantId);
+
+            return RedirectToAction("Details", new { id = restaurantId });
+        }
+
     }
 }

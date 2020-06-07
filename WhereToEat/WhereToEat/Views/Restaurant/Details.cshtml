@@ -6,15 +6,15 @@
 }
 <section class="restaurantDetailsName">
     <div class="restaurantName">
-        <h2> @Html.DisplayFor(model => model.Name) </h2>
+        <h2>@Html.DisplayFor(model => model.Name)</h2>
         <br />
         @if (Model.Categories.Count > 0)
         {
             @for (int i = 0; i < Model.Categories.Count; i++)
             {
-                <div>
+                <span class="badge badge-pill">
                     <a>@Model.Categories[i].Text</a>
-                </div>
+                </span>
             }
         }
     </div>
@@ -73,12 +73,16 @@
                         <option value="4">4</option>
                         <option value="5">5</option>
                     </select>
-                    <input type="submit" value="Rate">
+                    <input type="submit" value="Rate" class="btn btn-primary">
                 </form>
             }
             else
             {
                 <h4>Your rating: @Model.UserRating</h4>
+                <form asp-action="DeleteRating">
+                    <input type="hidden" name="restaurantId" class="form-control" value="@Model.Id">
+                    <input type="submit" value="Remove" class="btn btn-primary">
+                </form>
 
             }
 
@@ -113,7 +117,6 @@
                 </tbody>
             </table>
         </div>
-
     }
 
     <a asp-controller="Comment" asp-action="AddComment" asp-route-restaurantId="@Model.Id">Add Comment</a>
