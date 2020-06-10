@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WhereToEat.Models;
@@ -111,5 +113,37 @@ namespace WhereToEat.Controllers
             return RedirectToAction("Details", new { id = restaurantId });
         }
 
+        [HttpPost]
+        public List<CategoryModel> GetCategories()
+        {
+            var restaurantId = Convert.ToInt32(Request.Form["restaurantId"]);
+            var categories = _categoryService.GetCategoriesForRest(restaurantId);
+            return categories;
+        }
+
+        [Authorize]
+        public void RemoveCategory()
+        {
+            var restaurantId = Convert.ToInt32(Request.Form["restaurantId"]);
+            var category = Convert.ToInt32(Request.Form["categoryId"]);
+            _categoryService.RemoveRestaurantCategory(restaurantId, category);
+        }
+
+        public List<CategoryModel> GetCategoriesForRestaurant()
+        {
+            var restaurantId = Convert.ToInt32(Request.Form["restaurantId"]);
+
+            var categories = _categoryService.GetCategoriesForRestaurant(restaurantId);
+            return categories;
+        }
+
+        [Authorize]
+        public void AddCategoryToRestaurant()
+        {
+            var restaurantId = Convert.ToInt32(Request.Form["restaurantId"]);
+            var category = Convert.ToInt32(Request.Form["categoryId"]);
+
+            _categoryService.AddCategoryToRestaurant(restaurantId, category);
+        }
     }
 }

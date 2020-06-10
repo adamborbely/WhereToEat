@@ -8,15 +8,15 @@
     <div class="restaurantName">
         <h2>@Html.DisplayFor(model => model.Name)</h2>
         <br />
-        @if (Model.Categories.Count > 0)
-        {
-            @for (int i = 0; i < Model.Categories.Count; i++)
-            {
-                <span class="badge badge-pill">
-                    <a>@Model.Categories[i].Text</a>
-                </span>
-            }
-        }
+        <div id="badgeCategories_@Model.Id">
+        </div>
+        <br />
+        <div id="addCategory">
+            <label for="categories" sstyle="font-size: 8px;">Add category:</label>
+            <br />
+            <select id="categories" name="categories"></select>
+            <input type="button" id="addCategoryToRest" value="Add" class="btn btn-primary">
+        </div>
     </div>
     <div class="restaurantImage">
 
@@ -120,4 +120,5 @@
     }
 
     <a asp-controller="Comment" asp-action="AddComment" asp-route-restaurantId="@Model.Id">Add Comment</a>
+    <script src="~/js/site.js" charset="utf-8"></script>
 </div>

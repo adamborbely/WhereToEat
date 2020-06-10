@@ -54,9 +54,9 @@ CREATE TABLE restaurant_category(
 );
 
 CREATE TABLE user_rating(
-	restaurant_id INTEGER REFERENCES restaurants(restaurant_id) ON DELETE SET NULL,
-	user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
-	rating INTEGER CHECK (rating <= 5)
+	restaurant_id INTEGER REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
+	user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+	rating INTEGER CHECK (rating <= 5),
 	PRIMARY KEY(restaurant_id, user_id)
 );
 
@@ -106,6 +106,8 @@ select * from restaurants
 select * from comments*/
 
 INSERT INTO users (username, email, password, isOwner) VALUES ('admin', 'admin@admin.com', '2c+qROtqotsZWgY1wXh5OIukwbD5oi3iiRz09ReHlEhIlvYg', true);
+INSERT INTO users (username, email, password, isOwner) VALUES ('adam', 'adam@adam.com', '0pVBVutEK9gJd2Am6DmGz7GlwBDJ8KxwH8QG6XLNFnz2jpPL', false);
+INSERT INTO users (username, email, password, isOwner) VALUES ('reka', 'reka@reka.com', '0pVBVutEK9gJd2Am6DmGz7GlwBDJ8KxwH8QG6XLNFnz2jpPL', false);
 
 INSERT Into categories (name) Values ('Bakery');
 INSERT Into categories (name) Values ('Fast-food');
@@ -119,6 +121,9 @@ INSERT Into categories (name) Values ('Fish and chips');
 INSERT Into categories (name) Values ('All you can eat');
 INSERT Into categories (name) Values ('Vegan');
 
-INSERT INTO restaurant_category (restaurant_id, category_id) VALUES (1,1);
+INSERT INTO restaurants (name, city, zip_code, address, rating, owner_id, restaurant_imageURL) VALUES ('Hamburgers', 'Budapest', 1002, 'Petofi u. 2', 3.2,1, 'Hero.png');
+INSERT INTO restaurants (name, city, zip_code, address, rating, owner_id) VALUES ('Finom Falo', 'Miskolc', 3004, 'Petofi u. 9', 3.2,1);
 
-INSERT INTO restaurants (name, city, zip_code, address, rating, owner_id) VALUES ('Hamburgers', 'Budapest', 1002, 'Petofi u. 2', 3.2,1);
+INSERT INTO restaurant_category (restaurant_id, category_id) VALUES (1,1);
+INSERT INTO restaurant_category (restaurant_id, category_id) VALUES (1,4);
+INSERT INTO restaurant_category (restaurant_id, category_id) VALUES (1,5);

@@ -113,3 +113,8 @@ body {
     margin-left: 50%;
     height: 200px;
 }
+
+.removeCat:hover {
+    color: red;
+    
+}
