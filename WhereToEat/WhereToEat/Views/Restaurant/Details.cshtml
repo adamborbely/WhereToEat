@@ -11,12 +11,15 @@
         <div id="badgeCategories_@Model.Id">
         </div>
         <br />
-        <div id="addCategory">
-            <label for="categories" sstyle="font-size: 8px;">Add category:</label>
-            <br />
-            <select id="categories" name="categories"></select>
-            <input type="button" id="addCategoryToRest" value="Add" class="btn btn-primary">
-        </div>
+        @if (Context.User.Identity.IsAuthenticated)
+        {
+            <div id="addCategory">
+                <label for="categories" sstyle="font-size: 8px;">Add category:</label>
+                <br />
+                <select id="categories" name="categories"></select>
+                <input type="button" id="addCategoryToRest" value="Add" class="btn btn-primary">
+            </div>
+        }
     </div>
     <div class="restaurantImage">
 

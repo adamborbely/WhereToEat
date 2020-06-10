@@ -52,7 +52,7 @@ namespace WhereToEat.Controllers
         {
             var restaurant = _restaurantService.GetRestaurantById(id);
             var comments = _commentService.GetAllCommentsForRestaurant(id);
-            var categories = _categoryService.GetCategoriesForRest(id);
+            var categories = _categoryService.GetCategoriesForRest(id); // Js doing this 
             var userRating = 0;
 
             try
